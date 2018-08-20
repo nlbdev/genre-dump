@@ -21,6 +21,7 @@ def main(argv):
     
     genre_csv = argv[1]
     out_dir = argv[2]
+    filter_dir = argv[3]
     
     if not os.path.isfile(genre_csv):
         print("Not a file: " + str(genre_csv))
@@ -30,6 +31,8 @@ def main(argv):
         print("Not a directory: " + str(out_dir))
         sys.exit(1)
     
+    filter_books = os.listdir(filter_dir)
+
     genres = {}
     
     genre_id = 1
@@ -41,6 +44,9 @@ def main(argv):
             title = row[2]
             
             if genre is None or genre == "":
+                continue
+
+            if identifier not in filter_dir:
                 continue
             
             if genre not in genres:

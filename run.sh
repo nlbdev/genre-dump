@@ -4,6 +4,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 VMARC="$1"
 OUTDIR="$2"
+FILTERDIR="$3"
 
 if [ "$VMARC" != "" ] && [ ! -f "$VMARC" ]; then
     echo "'$VMARC' finnes ikke"
@@ -11,8 +12,11 @@ fi
 if [ "$OUTDIR" != "" ] && [ ! -d "$OUTDIR" ]; then
     echo "'$OUTDIR' finnes ikke"
 fi
-if [ ! -f "$VMARC" ] || [ ! -d "$OUTDIR" ]; then
-    echo "bruk: ./run.sh </path/to/data.vmarc.txt> <output_dir>"
+if [ "$FILTERDIR" != "" ] && [ ! -d "$FILTERDIR" ]; then
+    echo "'$FILTERDIR' finnes ikke"
+fi
+if [ ! -f "$VMARC" ] || [ ! -d "$OUTDIR" ] || [ ! -d "$FILTERDIR" ]; then
+    echo "bruk: ./run.sh </path/to/data.vmarc.txt> <output_dir> <filter_dir>"
     exit 1
 fi
 
@@ -58,6 +62,6 @@ if [ "$IDENTIFIER" != "" ]; then
 fi
 
 echo "lager XML..."
-python3 $DIR/build-xml.py $GENRE_TEMP_CSV $OUTDIR
+python3 $DIR/build-xml.py "$GENRE_TEMP_CSV" "$OUTDIR" "$FILTERDIR"
 
 echo "Sjanger-XML ligger nå ferdig i '$OUTDIR'."
