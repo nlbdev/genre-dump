@@ -46,7 +46,7 @@ def main(argv):
             if genre is None or genre == "":
                 continue
 
-            if identifier not in filter_dir:
+            if identifier not in filter_books:
                 continue
             
             if genre not in genres:
@@ -57,13 +57,15 @@ def main(argv):
                 genre_id += 1
             genres[genre]["books"][identifier] = title
     
+    sorted_genres = sorted([genre for genre in genres], key=lambda genre: len(genres[genre]["books"]), reverse=True)
+    
     genre_list_csv = os.path.join(out_dir, "genres.csv")
     with open(genre_list_csv, 'w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
-        for genre in genres:
-            csvwriter.writerow([genre, genres[genre]["id"]])
+        for genre in sorted_genres:
+            csvwriter.writerow([genre, genres[genre]["id"] + ".xml", str(len(genres[genre]["books"]))])
     
-    for genre in genres:
+    for genre in sorted_genres:
         genre_xml = os.path.join(out_dir, genres[genre]["id"] + ".xml")
         
         # <active_loans>...</active_loans>
