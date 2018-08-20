@@ -44,11 +44,11 @@ while read line; do
             TITLE=""
             GENRE=""
         fi
-        IDENTIFIER="`echo $line | sed 's/^....0*//' | sed 's/"/""/'`"
+        IDENTIFIER="`echo $line | sed 's/^....0*//' | sed 's/"/""/g'`"
     elif [ "$TAG" = "245" ]; then
-        TITLE="`echo $line | grep '\$a' | sed 's/.*\$a//' | sed 's/\$.*//' | sed 's/"/""/'`"
+        TITLE="`echo $line | grep '\$a' | sed 's/.*\$a//' | sed 's/\$.*//' | sed 's/"/""/g'`"
     elif [ "$TAG" = "655" ]; then
-        GENRE="`echo $line | grep '\$a' | sed 's/.*\$a//' | sed 's/\$.*//' | sed 's/"/""/'`"
+        GENRE="`echo $line | grep '\$a' | sed 's/.*\$a//' | sed 's/\$.*//' | sed 's/"/""/g'`"
     fi
 done < "$GENRE_TEMP_MARC"
 if [ "$IDENTIFIER" != "" ]; then
