@@ -42,6 +42,7 @@ def main(argv):
             genre = row[0]
             identifier = row[1]
             title = row[2]
+            available = row[3]
             
             if genre is None or genre == "":
                 continue
@@ -55,7 +56,7 @@ def main(argv):
                     "books": {}
                 }
                 genre_id += 1
-            genres[genre]["books"][identifier] = title
+            genres[genre]["books"][identifier] = {"title": title, "available": available}
     
     sorted_genres = sorted([genre for genre in genres], key=lambda genre: len(genres[genre]["books"]), reverse=True)
     
@@ -88,7 +89,8 @@ def main(argv):
             id_element = ET.SubElement(book, "id")
             id_element.text = identifier
             title = ET.SubElement(book, "title")
-            title.text = genres[genre]["books"][identifier]
+            title.text = genres[genre]["books"][identifier]["title"]
+            book.append(ET.Comment(" " + genres[genre]["books"][identifier]["available"] + " "))
 
         tree = ET.ElementTree(active_loans)
         tree.write(genre_xml, xml_declaration=True, encoding='UTF-8', pretty_print=True)

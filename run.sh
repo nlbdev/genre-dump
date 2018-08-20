@@ -24,7 +24,7 @@ GENRE_TEMP_MARC="/tmp/genre.marc"
 GENRE_TEMP_CSV="/tmp/genre.csv"
 
 echo "lager $GENRE_TEMP_MARC..."
-cat "$VMARC" | grep "^.\(001\|245\|655\)" > $GENRE_TEMP_MARC
+cat "$VMARC" | grep "^.\(001\|245\|592\|655\)" > $GENRE_TEMP_MARC
 
 echo "lager $GENRE_TEMP_CSV..."
 if [ -f "$GENRE_TEMP_CSV" ]; then
@@ -32,6 +32,7 @@ if [ -f "$GENRE_TEMP_CSV" ]; then
 fi
 IDENTIFIER=""
 TITLE=""
+AVAILABLE=""
 GENRE=""
 TOTAL_BOOKS="`cat "$VMARC" | grep "^.\(001\)" | wc -l`"
 COUNT=0
@@ -45,20 +46,23 @@ while read line; do
         fi
         
         if [ "$IDENTIFIER" != "" ]; then
-            echo "\"$GENRE\",\"$IDENTIFIER\",\"$TITLE\"" >> $GENRE_TEMP_CSV
+            echo "\"$GENRE\",\"$IDENTIFIER\",\"$TITLE\",\"$AVAILABLE\"" >> $GENRE_TEMP_CSV
             IDENTIFIER=""
             TITLE=""
+            AVAILABLE=""
             GENRE=""
         fi
         IDENTIFIER="`echo $line | sed 's/^....0*//' | sed 's/"/""/g'`"
     elif [ "$TAG" = "245" ]; then
         TITLE="`echo $line | grep '\$a' | sed 's/.*\$a//' | sed 's/\$.*//' | sed 's/"/""/g'`"
+    elif [ "$TAG" = "592" ]; then
+        AVAILABLE="`echo $line | grep '\$a' | sed 's/.*\$a//' | sed 's/\$.*//' | sed 's/"/""/g'`"
     elif [ "$TAG" = "655" ]; then
         GENRE="`echo $line | grep '\$a' | sed 's/.*\$a//' | sed 's/\$.*//' | sed 's/"/""/g'`"
     fi
 done < "$GENRE_TEMP_MARC"
 if [ "$IDENTIFIER" != "" ]; then
-    echo "\"$GENRE\",\"$IDENTIFIER\",\"$TITLE\"" >> $GENRE_TEMP_CSV
+    echo "\"$GENRE\",\"$IDENTIFIER\",\"$TITLE\",\"$AVAILABLE\"" >> $GENRE_TEMP_CSV
 fi
 
 echo "lager XML..."
