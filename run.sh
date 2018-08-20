@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 VMARC="$1"
 OUTDIR="$2"
 
@@ -56,6 +58,6 @@ if [ "$IDENTIFIER" != "" ]; then
 fi
 
 echo "lager XML..."
-python3 build-xml.py $GENRE_TEMP_CSV $OUTDIR
+python3 $DIR/build-xml.py $GENRE_TEMP_CSV $OUTDIR
 
 echo "Sjanger-XML ligger nå ferdig i '$OUTDIR'."
